@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="css/style.css">
 	<script src="https://aframe.io/releases/0.2.0/aframe.min.js"></script>
 	<script src="framework/aframe-mouse-cursor-component/dist/aframe-mouse-cursor-component.min.js"></script>
+	<script src="framework/aframe-no-click-look-controls.min.js"></script>
 	<!--<script src="js/aframe-meshline-component.min.js"></script>-->
 </head>
 
@@ -29,7 +30,8 @@
 			<img id="img15" src="img/L15.jpg">
 		</a-assets>
 
-		<a-entity id="camera" position="0 0 0" camera wasd-controls mouse-cursor look-controls></a-entity>
+		<!--<a-entity id="camera" position="0 0 0" camera wasd-controls mouse-cursor look-controls no-click-look-controls="maxyaw:10; maxpitch: 6; enabled: true"></a-entity>-->
+		<a-entity id="camera" position="0 0 0" rotation="0 0 0" camera mouse-cursor></a-entity>
 		<a-sky id="sky" src="#img1" radius="100" rotation="0 90 0"></a-sky>
 
 	</a-scene>

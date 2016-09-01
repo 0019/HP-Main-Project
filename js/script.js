@@ -32,6 +32,8 @@ var gap = 0.01;
 var loop = interval / gap;
 var transitting = 0; // 0: waiting 1: transitting 2: updating count
 
+var element = document.getElementsByTagName('body')[0]; // document.body;
+
 var timer = null;
 // Press > or < to switch forward or backward
 $('body').on('keydown', function(e) {
@@ -145,6 +147,15 @@ function smoothRelocate(d) {
 };
 
 function start() {
+	element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+
+	element.addEventListener('click', function() {
+		element.requestPointerLock();
+	}, false);
+
+	document.addEventListener('pointerlockchange', lockChangeHandler, false);
+	document.addEventListener('mozpointerlockchange', lockChangeHandler, false);
+
 //	var imageLoader = setInterval(function() {
 //		loadLargeImage();
 //	}, 500);
@@ -154,6 +165,29 @@ function start() {
 function loadLargeImage() {
 	if (!transitting) {
 		imgObj.src = 'img/' + count + '.jpg';
+	}
+}
+
+function canvasLoop(event) {
+	var PI_2 = Math.PI / 2;
+	var rotation = $('#camera').attr('rotation');
+
+	var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+	var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+
+	var y = parseFloat(rotation.y) - movementX * 0.12;
+	var x = parseFloat(rotation.x) - movementY * 0.12;
+	console.log(y);
+
+	x = Math.max( -90, Math.min(90, x) );
+	$('#camera').attr('rotation', x + ' ' + y + ' ' + rotation.z);
+}
+
+function lockChangeHandler() {
+	if(document.pointerLockElement === element || document.mozPointerLockElement === element) {
+		document.addEventListener("mousemove", canvasLoop, false);
+	} else {
+		document.removeEventListener("mousemove", canvasLoop, false);
 	}
 }
 
