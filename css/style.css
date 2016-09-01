@@ -1,3 +1,7 @@
+body:hover {
+	cursor: pointer;
+}
+
 .arrow.arrowactive:hover {
 	cursor: pointer;
 	opacity: 1;

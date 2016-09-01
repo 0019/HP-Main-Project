@@ -27,6 +27,8 @@ function relocate() {
 var count = 1;
 var keylog = 2;
 
+var isMobile = false;
+
 var interval = 0.05;
 var gap = 0.01;
 var loop = interval / gap;
@@ -37,17 +39,22 @@ var element = document.getElementsByTagName('body')[0]; // document.body;
 var timer = null;
 // Press > or < to switch forward or backward
 $('body').on('keydown', function(e) {
-	if (timer == null && (e.keyCode == 190 || e.keyCode == 65)) {
-		timer = setInterval(function() {
-			increaseCount();
-		}, 0.2);
-	} else if (timer == null && (e.keyCode == 188 || e.keyCode == 68)) {
-		timer = setInterval(function() {
-			decreaseCount();
-		}, 0.2);
-	} else if (e.keyCode == 81 || e.keyCode == 67) {
-		clearInterval(timer);
-		timer = null;
+	if (isMobile) {
+		if (timer == null && (e.keyCode == 190 || e.keyCode == 65)) {
+			timer = setInterval(function() {
+				increaseCount();
+			}, 0.2);
+		} else if (timer == null && (e.keyCode == 188 || e.keyCode == 68)) {
+			timer = setInterval(function() {
+				decreaseCount();
+			}, 0.2);
+		} else if (e.keyCode == 81 || e.keyCode == 67) {
+			clearInterval(timer);
+			timer = null;
+		}
+	} else {
+		if (e.keyCode == 190) increaseCount();
+		else if (e.keyCode == 188) decreaseCount();
 	}
 });
 
@@ -147,6 +154,7 @@ function smoothRelocate(d) {
 };
 
 function start() {
+	isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 	element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
 
 	element.addEventListener('click', function() {
