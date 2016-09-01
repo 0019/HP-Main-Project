@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ATAP Project</title>
+	<link rel="stylesheet" href="css/style.css">
+	<script src="https://aframe.io/releases/0.2.0/aframe.min.js"></script>
+	<script src="framework/aframe-mouse-cursor-component/dist/aframe-mouse-cursor-component.min.js"></script>
+	<!--<script src="js/aframe-meshline-component.min.js"></script>-->
+</head>
+
+<body class="noselect">
+	<a-scene>
+		<a-assets>
+			<img id="img1" src="img/L1.jpg">
+			<img id="img2" src="img/L2.jpg">
+			<img id="img3" src="img/L3.jpg">
+			<img id="img4" src="img/L4.jpg">
+			<img id="img5" src="img/L5.jpg">
+			<img id="img6" src="img/L6.jpg">
+			<img id="img7" src="img/L7.jpg">
+			<img id="img8" src="img/L8.jpg">
+			<img id="img9" src="img/L9.jpg">
+			<img id="img10" src="img/L10.jpg">
+			<img id="img11" src="img/L11.jpg">
+			<img id="img12" src="img/L12.jpg">
+			<img id="img13" src="img/L13.jpg">
+			<img id="img14" src="img/L14.jpg">
+			<img id="img15" src="img/L15.jpg">
+		</a-assets>
+
+		<a-entity id="camera" position="0 0 0" camera wasd-controls mouse-cursor look-controls></a-entity>
+		<a-sky id="sky" src="#img1" radius="100" rotation="0 90 0"></a-sky>
+
+	</a-scene>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+	<script src="js/script.js"></script>
+</body>
+</html>
