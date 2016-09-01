@@ -37,26 +37,31 @@ var transitting = 0; // 0: waiting 1: transitting 2: updating count
 var element = document.getElementsByTagName('body')[0]; // document.body;
 
 var timer = null;
-// Press > or < to switch forward or backward
-$('body').on('keydown', function(e) {
-	if (isMobile) {
-		if (timer == null && (e.keyCode == 190 || e.keyCode == 65)) {
-			timer = setInterval(function() {
-				increaseCount();
-			}, 0.2);
-		} else if (timer == null && (e.keyCode == 188 || e.keyCode == 68)) {
-			timer = setInterval(function() {
-				decreaseCount();
-			}, 0.2);
-		} else if (e.keyCode == 81 || e.keyCode == 67) {
-			clearInterval(timer);
-			timer = null;
-		}
-	} else {
-		if (e.keyCode == 190) increaseCount();
-		else if (e.keyCode == 188) decreaseCount();
+
+function desktopWheelControls(e) {
+	if (e.deltaY < 0) increaseCount();
+	else if (e.deltaY > 0) decreaseCount();
+}
+
+function desktopKeyboardControls(e) {
+	if (e.keyCode == 87) increaseCount();
+	else if (e.keyCode == 83) decreaseCount();
+}
+
+function mobileControls(e) {
+	if (timer == null && (e.keyCode == 190 || e.keyCode == 65)) {
+		timer = setInterval(function() {
+			increaseCount();
+		}, 0.2);
+	} else if (timer == null && (e.keyCode == 188 || e.keyCode == 68)) {
+		timer = setInterval(function() {
+			decreaseCount();
+		}, 0.2);
+	} else if (e.keyCode == 81 || e.keyCode == 67) {
+		clearInterval(timer);
+		timer = null;
 	}
-});
+};
 
 $('body').on('keyup', function(e) {
 	if (e.keyCode == 190 || e.keyCode == 188) {
@@ -68,7 +73,6 @@ function increaseCount() {
 	if (!transitting && count < 12) {
 		transitting = 2;
 		count++;
-		console.log('Count = ' + count);
 		smoothRelocate('f');
 	}
 }
@@ -77,7 +81,6 @@ function decreaseCount() {
 	if (!transitting && count > 1) {
 		transitting = 2;
 		count--;
-		//relocate();
 		smoothRelocate('b');
 	}
 }
@@ -155,18 +158,18 @@ function smoothRelocate(d) {
 
 function start() {
 	isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+	if (isMobile) {
+		document.addEventListener('keydown', mobileControls, false);
+	} else {
+		document.addEventListener('wheel', desktopWheelControls, false);
+		document.addEventListener('keydown', desktopKeyboardControls, false);
+	}
 	element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
-
 	element.addEventListener('click', function() {
 		element.requestPointerLock();
 	}, false);
-
 	document.addEventListener('pointerlockchange', lockChangeHandler, false);
 	document.addEventListener('mozpointerlockchange', lockChangeHandler, false);
-
-//	var imageLoader = setInterval(function() {
-//		loadLargeImage();
-//	}, 500);
 	relocate();
 }
 
@@ -177,16 +180,11 @@ function loadLargeImage() {
 }
 
 function canvasLoop(event) {
-	var PI_2 = Math.PI / 2;
 	var rotation = $('#camera').attr('rotation');
-
 	var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 	var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-
 	var y = parseFloat(rotation.y) - movementX * 0.12;
 	var x = parseFloat(rotation.x) - movementY * 0.12;
-	console.log(y);
-
 	x = Math.max( -90, Math.min(90, x) );
 	$('#camera').attr('rotation', x + ' ' + y + ' ' + rotation.z);
 }
