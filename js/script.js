@@ -1,3 +1,5 @@
+var data = [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]];
+
 // Image object and its basic function
 var imgObj = new Image();
 imgObj.onload = function() {
@@ -38,14 +40,15 @@ var element = document.getElementsByTagName('body')[0]; // document.body;
 
 var timer = null;
 
-function desktopWheelControls(e) {
-	if (e.deltaY < 0) increaseCount();
-	else if (e.deltaY > 0) decreaseCount();
-}
-
-function desktopKeyboardControls(e) {
-	if (e.keyCode == 87) increaseCount();
-	else if (e.keyCode == 83) decreaseCount();
+function desktopControls(e) {
+	var rotation = $('#camera').attr('rotation').y % 360;
+	if (e.keyCode == 87 || e.deltaY < 0) {
+		if (rotation <= 90 && rotation >= -90) increaseCount();
+		else decreaseCount();
+	} else if (e.keyCode == 83 || e.deltaY > 0) {
+		if (rotation <= 90 && rotation >= -90) decreaseCount();
+		else increaseCount();
+	}
 }
 
 function mobileControls(e) {
@@ -161,8 +164,8 @@ function start() {
 	if (isMobile) {
 		document.addEventListener('keydown', mobileControls, false);
 	} else {
-		document.addEventListener('wheel', desktopWheelControls, false);
-		document.addEventListener('keydown', desktopKeyboardControls, false);
+		document.addEventListener('wheel', desktopControls, false);
+		document.addEventListener('keydown', desktopControls, false);
 	}
 	element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
 	element.addEventListener('click', function() {
