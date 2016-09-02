@@ -11,6 +11,7 @@ function relocate() {
 	zoomBack();
 	$('#sky').attr('src', '#img' + count);
 	$('#sky, #camera').attr('position','0, 0, 0');
+	$('#logo').attr('position','0, -1.8, 0');
 	console.log(count + " loaded");
 	// Adjust scene orientation
 	/*
@@ -42,11 +43,12 @@ var timer = null;
 
 function desktopControls(e) {
 	var rotation = $('#camera').attr('rotation').y % 360;
+	rotation = Math.abs(rotation);
 	if (e.keyCode == 87 || e.deltaY < 0) {
-		if (rotation <= 90 && rotation >= -90) increaseCount();
+		if (rotation <= 90 || rotation >= 270) increaseCount();
 		else decreaseCount();
 	} else if (e.keyCode == 83 || e.deltaY > 0) {
-		if (rotation <= 90 && rotation >= -90) decreaseCount();
+		if (rotation <= 90 || rotation >= 270) decreaseCount();
 		else increaseCount();
 	}
 }
@@ -143,14 +145,15 @@ function smoothRelocate(d) {
     var dx = gx / loop;
     var dz = gz / loop;
     var counter = 0;
-    var newPos;
-    newPos = x + ' ' + 0 + ' ' + z;
+    var newPos, logoPos;
     var moveCam = setInterval(function() {
         x += dx;
         z += dz;
         counter++;
         newPos = x + ' ' + 0 + ' ' + z;
+        logoPos = x + ' ' + '-1.8' + ' ' + z;
         $('#camera').attr('position', newPos);
+        $('#logo').attr('position', logoPos);
         if (counter >= loop) {
             clearInterval(moveCam);
             relocate();
@@ -161,18 +164,21 @@ function smoothRelocate(d) {
 
 function start() {
 	isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+//	isMobile = true;
 	if (isMobile) {
 		document.addEventListener('keydown', mobileControls, false);
+		$('#camera').html('<a-entity camera look-controls mouse-cursor></a-entity>');
 	} else {
+		$('#camera').html('<a-entity camera mouse-cursor></a-entity>');
 		document.addEventListener('wheel', desktopControls, false);
 		document.addEventListener('keydown', desktopControls, false);
+		element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+		element.addEventListener('click', function() {
+			element.requestPointerLock();
+		}, false);
+		document.addEventListener('pointerlockchange', lockChangeHandler, false);
+		document.addEventListener('mozpointerlockchange', lockChangeHandler, false);
 	}
-	element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
-	element.addEventListener('click', function() {
-		element.requestPointerLock();
-	}, false);
-	document.addEventListener('pointerlockchange', lockChangeHandler, false);
-	document.addEventListener('mozpointerlockchange', lockChangeHandler, false);
 	relocate();
 }
 
